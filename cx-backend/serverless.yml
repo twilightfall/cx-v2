@@ -1,0 +1,15 @@
+service: cx-backend
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  region: ap-southeast-1
+
+functions:
+  get-price:
+    handler: getTcgPrices.handler
+    events:
+      - httpApi:
+          path: /price/{id}
+          method: GET
