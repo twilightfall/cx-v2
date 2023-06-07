@@ -11,5 +11,5 @@ functions:
     handler: getTcgPrices.handler
     events:
       - httpApi:
-          path: /price/{id}
+          path: /prices
           method: GET
