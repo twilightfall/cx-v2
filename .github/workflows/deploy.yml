@@ -10,7 +10,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - run: | 
-          cd cx-frontend
+          cd cx_frontend
       - uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
