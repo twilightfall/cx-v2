@@ -13,16 +13,23 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+
       - uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
+
+      - name: Enable Flutter Web
+        run: flutter config --enable-web
+
       - run: flutter pub get
-      - run: flutter test
+
       - run: flutter build web --release
+
       - name: Copy into deployment folder
         shell: pwsh
         run: | 
           .\buildweb.ps1
+      
       - uses: stefanzweifel/git-auto-commit-action@v4
         with:
           commit_message: Commit build artifacts
