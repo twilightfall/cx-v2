@@ -3,6 +3,10 @@ name: CX-V2 Amplify Deploy
   push:
     branches:
       - "main"
+
+defaults:
+    run:
+      working-directory: .\cx_frontend
 jobs:
   build_and_deploy_web:
     name: Flutter Web Build/Deploy
@@ -12,7 +16,6 @@ jobs:
       - uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
-          working-directory: .\cx_frontend
       - run: flutter pub get
       - run: flutter test
       - run: flutter build web --release
