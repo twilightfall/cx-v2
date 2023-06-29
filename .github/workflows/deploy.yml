@@ -12,12 +12,12 @@ jobs:
       - uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
-      - run: | 
-          cd cx_frontend
+          working-directory: .\cx_frontend
       - run: flutter pub get
       - run: flutter test
       - run: flutter build web --release
       - name: Copy into deployment folder
+        working-directory: .\cx_frontend  
         shell: pwsh
         run: | 
           .\buildweb.ps1
