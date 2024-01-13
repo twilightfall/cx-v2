@@ -1,8 +1,11 @@
+// ignore_for_file: avoid_web_libraries_in_flutter
+
 import 'dart:convert';
 import 'dart:html' as html;
 import 'package:csv/csv.dart';
 import 'package:cx_frontend/scryfall.dart' as scryfall;
 import 'package:flutter/material.dart';
+import 'tcgplayer.dart' as tcg;
 
 import 'apis.dart';
 
@@ -97,6 +100,10 @@ class _CxHomeState extends State<CxHome> {
   int getGradedPrice(int price, double multiplier) {
     return (price * multiplier).toInt();
   }
+
+  // int geMidPricing(int tcgId, int multiplier) {
+  //   Future<tcg.Prices> tcgPrices;
+  // }
 
   List<String> generateCsvRow(scryfall.Card cardData) {
     String type = "simple";
@@ -294,153 +301,155 @@ class _CxHomeState extends State<CxHome> {
         backgroundColor: Colors.yellow,
       ),
       drawer: Drawer(
-          child: ListView(
-        children: [
-          const DrawerHeader(
-            decoration: BoxDecoration(color: Colors.blue),
-            child: Text("Set extraction data on this panel!"),
-          ),
-          Form(
-            key: _formKey,
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Select Set Code: $selectedSetCode'),
-                  FutureBuilder(
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        return DropdownButtonFormField<String>(
-                          isExpanded: true,
-                          items: snapshot.data!.data!
-                              .where((set) =>
-                                  set.setType != 'token' &&
-                                  set.setType != 'minigame' &&
-                                  set.setType != 'memorabilia' &&
-                                  set.digital == false)
-                              .map(
-                                (e) => DropdownMenuItem<String>(
-                                  value: e.code!,
-                                  child: Text(e.name!),
-                                ),
-                              )
-                              .toList(),
-                          onChanged: (value) {
-                            setState(() {
-                              selectedSetCode = value!;
-                            });
-                          },
-                        );
-                      }
-
-                      if (snapshot.hasError) {
-                        return const Text("ERROR");
-                      }
-
-                      return const Text('LOADING SETS...');
-                    },
-                    future: setData,
-                  ),
-                  const Padding(
-                    padding: EdgeInsets.only(top: 5, bottom: 5),
-                    child: Divider(
-                      height: 5,
-                      thickness: 2.5,
-                      indent: 15,
-                      endIndent: 15,
-                      color: Colors.black,
-                    ),
-                  ),
-                  const Text("Set multiplier: "),
-                  TextFormField(
-                    decoration: const InputDecoration(
-                      hintText: "Multiplier value for pricing: ",
-                    ),
-                    validator: (value) {
-                      return value!.isEmpty || int.tryParse(value) == null
-                          ? "Enter a valid integer numeric value (whole numbers only!)"
-                          : null;
-                    },
-                    controller: multiplierController,
-                  ),
-                  const Padding(
-                    padding: EdgeInsets.only(top: 5, bottom: 5),
-                    child: Divider(
-                      height: 5,
-                      thickness: 2.5,
-                      indent: 15,
-                      endIndent: 15,
-                      color: Colors.black,
-                    ),
-                  ),
-                  const Text("Percentages for SP, PLD, and HP prices:"),
-                  Text('SP Price percentage (Default 0.95): $spMultiplier%'),
-                  Slider(
-                    value: spMultiplier,
-                    max: 100,
-                    divisions: 100,
-                    label: spMultiplier.round().toString(),
-                    onChanged: (value) {
-                      setState(() {
-                        spMultiplier = value;
-                      });
-                    },
-                  ),
-                  Text('PLD Price percentage (Default 0.9): $pldMultiplier%'),
-                  Slider(
-                    value: pldMultiplier,
-                    max: 100,
-                    divisions: 100,
-                    label: pldMultiplier.round().toString(),
-                    onChanged: (value) {
-                      setState(() {
-                        pldMultiplier = value;
-                      });
-                    },
-                  ),
-                  Text('HP Price percentage (Default 0.8): $hpMultiplier%'),
-                  Slider(
-                    value: hpMultiplier,
-                    max: 100,
-                    divisions: 100,
-                    label: hpMultiplier.round().toString(),
-                    onChanged: (value) {
-                      setState(() {
-                        hpMultiplier = value;
-                      });
-                    },
-                  ),
-                  const Padding(
-                    padding: EdgeInsets.only(top: 5, bottom: 5),
-                    child: Divider(
-                      height: 5,
-                      thickness: 2.5,
-                      indent: 15,
-                      endIndent: 15,
-                      color: Colors.black,
-                    ),
-                  ),
-                  Center(
-                    child: MaterialButton(
-                      color: Colors.blueAccent,
-                      onPressed: () {
-                        if (_formKey.currentState!.validate()) {
-                          setState(() {
-                            nmMultiplier = int.parse(multiplierController.text);
-                            cardList = getCardList(selectedSetCode);
-                          });
+        child: ListView(
+          children: [
+            const DrawerHeader(
+              decoration: BoxDecoration(color: Colors.blue),
+              child: Text("Set extraction data on this panel!"),
+            ),
+            Form(
+              key: _formKey,
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Select Set Code: $selectedSetCode'),
+                    FutureBuilder(
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          return DropdownButtonFormField<String>(
+                            isExpanded: true,
+                            items: snapshot.data!.data!
+                                .where((set) =>
+                                    set.setType != 'token' &&
+                                    set.setType != 'minigame' &&
+                                    set.setType != 'memorabilia' &&
+                                    set.digital == false)
+                                .map(
+                                  (e) => DropdownMenuItem<String>(
+                                    value: e.code!,
+                                    child: Text(e.name!),
+                                  ),
+                                )
+                                .toList(),
+                            onChanged: (value) {
+                              setState(() {
+                                selectedSetCode = value!;
+                              });
+                            },
+                          );
                         }
+
+                        if (snapshot.hasError) {
+                          return const Text("ERROR");
+                        }
+
+                        return const Text('LOADING SETS...');
                       },
-                      child: const Text("SEARCH"),
+                      future: setData,
                     ),
-                  )
-                ],
+                    const Padding(
+                      padding: EdgeInsets.only(top: 5, bottom: 5),
+                      child: Divider(
+                        height: 5,
+                        thickness: 2.5,
+                        indent: 15,
+                        endIndent: 15,
+                        color: Colors.black,
+                      ),
+                    ),
+                    const Text("Set multiplier: "),
+                    TextFormField(
+                      decoration: const InputDecoration(
+                        hintText: "Multiplier value for pricing: ",
+                      ),
+                      validator: (value) {
+                        return value!.isEmpty || int.tryParse(value) == null
+                            ? "Enter a valid integer numeric value (whole numbers only!)"
+                            : null;
+                      },
+                      controller: multiplierController,
+                    ),
+                    const Padding(
+                      padding: EdgeInsets.only(top: 5, bottom: 5),
+                      child: Divider(
+                        height: 5,
+                        thickness: 2.5,
+                        indent: 15,
+                        endIndent: 15,
+                        color: Colors.black,
+                      ),
+                    ),
+                    const Text("Percentages for SP, PLD, and HP prices:"),
+                    Text('SP Price percentage (Default 0.95): $spMultiplier%'),
+                    Slider(
+                      value: spMultiplier,
+                      max: 100,
+                      divisions: 100,
+                      label: spMultiplier.round().toString(),
+                      onChanged: (value) {
+                        setState(() {
+                          spMultiplier = value;
+                        });
+                      },
+                    ),
+                    Text('PLD Price percentage (Default 0.9): $pldMultiplier%'),
+                    Slider(
+                      value: pldMultiplier,
+                      max: 100,
+                      divisions: 100,
+                      label: pldMultiplier.round().toString(),
+                      onChanged: (value) {
+                        setState(() {
+                          pldMultiplier = value;
+                        });
+                      },
+                    ),
+                    Text('HP Price percentage (Default 0.8): $hpMultiplier%'),
+                    Slider(
+                      value: hpMultiplier,
+                      max: 100,
+                      divisions: 100,
+                      label: hpMultiplier.round().toString(),
+                      onChanged: (value) {
+                        setState(() {
+                          hpMultiplier = value;
+                        });
+                      },
+                    ),
+                    const Padding(
+                      padding: EdgeInsets.only(top: 5, bottom: 5),
+                      child: Divider(
+                        height: 5,
+                        thickness: 2.5,
+                        indent: 15,
+                        endIndent: 15,
+                        color: Colors.black,
+                      ),
+                    ),
+                    Center(
+                      child: MaterialButton(
+                        color: Colors.blueAccent,
+                        onPressed: () {
+                          if (_formKey.currentState!.validate()) {
+                            setState(() {
+                              nmMultiplier =
+                                  int.parse(multiplierController.text);
+                              cardList = getCardList(selectedSetCode);
+                            });
+                          }
+                        },
+                        child: const Text("SEARCH"),
+                      ),
+                    )
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
-      )),
+          ],
+        ),
+      ),
       body: LayoutBuilder(
         builder: (context, constraints) {
           return Center(
@@ -450,6 +459,10 @@ class _CxHomeState extends State<CxHome> {
                   return Center(
                     child: Text(snapshot.error.toString()),
                   );
+                }
+
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Text("LOADING DATA");
                 }
 
                 if (snapshot.hasData) {
