@@ -37,6 +37,7 @@ class _CxHomeState extends State<CxHome> {
       dividerThickness: 2,
       columns: _createColumns(),
       rows: _createRows(cards, multiplier),
+      columnSpacing: 25,
     );
   }
 
