@@ -5,7 +5,6 @@ import 'dart:html' as html;
 import 'package:csv/csv.dart';
 import 'package:cx_frontend/scryfall.dart' as scryfall;
 import 'package:flutter/material.dart';
-import 'tcgplayer.dart' as tcg;
 
 import 'apis.dart';
 
