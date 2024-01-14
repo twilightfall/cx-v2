@@ -1,10 +1,8 @@
 name: CX-V2 Amplify Deploy
-"on":
+on:
   push:
     branches:
       - "main"
-    paths:
-      - "cx_frontend"
 
 defaults:
     run:
