@@ -256,15 +256,14 @@ class Card {
     cmc = json['cmc'];
     manaCost = json['mana_cost'];
     typeLine = json['type_line'];
-    colorIdentity = (json['color_identity'] as List<dynamic>).cast<String>();
+    colorIdentity = (json['color_identity'] ?? []).cast<String>();
     if (json['color_indicator'] != null) {
-      colorIndicator =
-          (json['color_indicator'] as List<dynamic>).cast<String>();
+      colorIndicator = (json['color_indicator'] ?? []).cast<String>();
     }
     if (json['colors'] != null) {
-      colors = (json['colors'] as List<dynamic>).cast<String>();
+      colors = (json['colors'] ?? []).cast<String>();
     }
-    keywords = (json['keywords'] as List<dynamic>).cast<String>();
+    keywords = (json['keywords'] ?? []).cast<String>();
     if (json['oracle_text'] != null) {
       oracleText = json['oracle_text'];
     }
@@ -280,11 +279,11 @@ class Card {
     legalities = json['legalities'] != null
         ? Legalities.fromJson(json['legalities'])
         : null;
-    games = (json['games'] as List<dynamic>).cast<String>();
+    games = (json['games'] ?? []).cast<String>();
     reserved = json['reserved'];
     foil = json['foil'];
     nonfoil = json['nonfoil'];
-    finishes = (json['finishes'] as List<dynamic>).cast<String>();
+    finishes = (json['finishes'] ?? []).cast<String>();
     oversized = json['oversized'];
     promo = json['promo'];
     reprint = json['reprint'];
@@ -302,11 +301,11 @@ class Card {
     digital = json['digital'];
     rarity = json['rarity'];
     artist = json['artist'];
-    artistIds = (json['artist_ids'] as List<dynamic>).cast<String>();
+    artistIds = (json['artist_ids'] ?? []).cast<String>();
     borderColor = json['border_color'];
     frame = json['frame'];
     if (json['frame_effects'] != null) {
-      frameEffects = (json['frame_effects'] as List<dynamic>).cast<String>();
+      frameEffects = (json['frame_effects'] ?? []).cast<String>();
     }
     securityStamp = json['security_stamp'];
     fullArt = json['full_art'];
@@ -314,7 +313,7 @@ class Card {
     booster = json['booster'];
     storySpotlight = json['story_spotlight'];
     if (json['promo_types'] != null) {
-      promoTypes = (json['promo_types'] as List<dynamic>).cast<String>();
+      promoTypes = (json['promo_types'] ?? []).cast<String>();
     }
     edhrecRank = json['edhrec_rank'];
     prices = json['prices'] != null ? Prices.fromJson(json['prices']) : null;
